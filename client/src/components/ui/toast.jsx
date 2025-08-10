@@ -1,4 +1,3 @@
-
 import * as React from "react"
 import * as ToastPrimitives from "@radix-ui/react-toast"
 import { cva } from "class-variance-authority"
@@ -93,13 +92,11 @@ const ToastDescription = React.forwardRef(({ className, ...props }, ref) => (
 ToastDescription.displayName = ToastPrimitives.Description.displayName
 
 export {
-  type ToastProps,
-  type ToastActionElement,
   ToastProvider,
   ToastViewport,
   Toast,
+  ToastAction,
+  ToastClose,
   ToastTitle,
   ToastDescription,
-  ToastClose,
-  ToastAction,
 }
