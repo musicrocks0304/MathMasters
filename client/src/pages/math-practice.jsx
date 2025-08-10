@@ -1,174 +1,197 @@
-
-import React, { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { useToast } from '@/hooks/use-toast'
+import React, { useState, useEffect } from 'react';
+import { CheckCircle, XCircle, RefreshCw, Award } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 function MathPractice() {
-  const [problem, setProblem] = useState(null)
-  const [userAnswer, setUserAnswer] = useState('')
-  const [score, setScore] = useState(0)
-  const [totalProblems, setTotalProblems] = useState(0)
-  const [showResult, setShowResult] = useState(false)
-  const [isCorrect, setIsCorrect] = useState(false)
-  const { toast } = useToast()
+  const [currentProblem, setCurrentProblem] = useState(null);
+  const [userAnswer, setUserAnswer] = useState('');
+  const [score, setScore] = useState(0);
+  const [problemsAttempted, setProblemsAttempted] = useState(0);
+  const [showResult, setShowResult] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(false);
+  const [difficulty, setDifficulty] = useState(2); // Number of digits
 
   const generateProblem = () => {
-    const operations = ['+', '-']
-    const operation = operations[Math.floor(Math.random() * operations.length)]
+    const operation = Math.random() > 0.5 ? 'addition' : 'subtraction';
+    const max = Math.pow(10, difficulty) - 1;
+    const min = Math.pow(10, difficulty - 1);
     
-    let num1, num2, answer
+    let num1 = Math.floor(Math.random() * (max - min + 1)) + min;
+    let num2 = Math.floor(Math.random() * (max - min + 1)) + min;
     
-    if (operation === '+') {
-      num1 = Math.floor(Math.random() * 999) + 10 // 10-999
-      num2 = Math.floor(Math.random() * 999) + 10 // 10-999
-      answer = num1 + num2
-    } else {
-      num1 = Math.floor(Math.random() * 999) + 100 // 100-999
-      num2 = Math.floor(Math.random() * (num1 - 10)) + 10 // ensure positive result
-      answer = num1 - num2
+    // For subtraction, ensure num1 >= num2 to avoid negative results
+    if (operation === 'subtraction' && num1 < num2) {
+      [num1, num2] = [num2, num1];
     }
-
-    setProblem({
+    
+    const answer = operation === 'addition' ? num1 + num2 : num1 - num2;
+    
+    return {
       num1,
       num2,
       operation,
       answer
-    })
-    setUserAnswer('')
-    setShowResult(false)
-  }
+    };
+  };
 
-  const checkAnswer = () => {
-    if (!problem || userAnswer === '') return
-
-    const userNum = parseInt(userAnswer)
-    const correct = userNum === problem.answer
+  const handleSubmit = () => {
+    if (!currentProblem || userAnswer === '') return;
     
-    setIsCorrect(correct)
-    setShowResult(true)
-    setTotalProblems(prev => prev + 1)
+    const correct = parseInt(userAnswer) === currentProblem.answer;
+    setIsCorrect(correct);
+    setShowResult(true);
     
     if (correct) {
-      setScore(prev => prev + 1)
-      toast({
-        title: "Correct! 🎉",
-        description: "Great job! Keep practicing.",
-      })
-    } else {
-      toast({
-        title: "Not quite right",
-        description: `The correct answer is ${problem.answer}. Try again!`,
-        variant: "destructive"
-      })
+      setScore(score + 1);
     }
-  }
+    setProblemsAttempted(problemsAttempted + 1);
+  };
 
   const nextProblem = () => {
-    generateProblem()
-  }
+    setCurrentProblem(generateProblem());
+    setUserAnswer('');
+    setShowResult(false);
+  };
 
   useEffect(() => {
-    generateProblem()
-  }, [])
+    setCurrentProblem(generateProblem());
+  }, [difficulty]);
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       if (showResult) {
-        nextProblem()
+        nextProblem();
       } else {
-        checkAnswer()
+        handleSubmit();
       }
     }
-  }
+  };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-2xl">
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-primary mb-2">
-          Math Practice Pro
-        </h1>
-        <p className="text-lg text-muted-foreground">
-          Master addition and subtraction with regrouping
-        </p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+      <div className="max-w-4xl mx-auto">
+        <header className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">
+            Math Practice Pro
+          </h1>
+          <p className="text-gray-600">
+            Master addition and subtraction with regrouping
+          </p>
+        </header>
 
-      <div className="grid gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Your Progress</CardTitle>
-            <CardDescription>
-              Score: {score} out of {totalProblems} problems
-              {totalProblems > 0 && (
-                <span className="ml-2">
-                  ({Math.round((score / totalProblems) * 100)}% correct)
-                </span>
-              )}
-            </CardDescription>
-          </CardHeader>
-        </Card>
-
-        {problem && (
+        <div className="grid gap-6 md:grid-cols-2">
+          {/* Settings Card */}
           <Card>
             <CardHeader>
-              <CardTitle>Solve this problem:</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Award className="w-5 h-5" />
+                Settings & Progress
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="text-center">
-                <div className="text-6xl font-mono font-bold space-y-2">
-                  <div>{problem.num1.toLocaleString()}</div>
-                  <div className="flex items-center justify-center gap-4">
-                    <span className="text-4xl">{problem.operation}</span>
-                    <span>{problem.num2.toLocaleString()}</span>
-                  </div>
-                  <div className="border-t-4 border-primary pt-2">
-                    <input
-                      type="number"
-                      value={userAnswer}
-                      onChange={(e) => setUserAnswer(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      className="text-center bg-transparent border-none outline-none w-full"
-                      placeholder="?"
-                      disabled={showResult}
-                    />
-                  </div>
-                </div>
+            <CardContent className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Difficulty (Number of Digits)
+                </label>
+                <select 
+                  value={difficulty} 
+                  onChange={(e) => setDifficulty(parseInt(e.target.value))}
+                  className="w-full p-2 border rounded-md"
+                >
+                  <option value={2}>2 Digits</option>
+                  <option value={3}>3 Digits</option>
+                  <option value={4}>4 Digits</option>
+                </select>
               </div>
-
-              {showResult && (
-                <div className={`text-center p-4 rounded-lg ${
-                  isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                }`}>
-                  <div className="text-lg font-semibold">
-                    {isCorrect ? '✅ Correct!' : '❌ Incorrect'}
-                  </div>
-                  <div className="text-sm mt-1">
-                    The answer is {problem.answer}
-                  </div>
+              
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span>Score:</span>
+                  <span className="font-bold text-green-600">{score}</span>
                 </div>
-              )}
-
-              <div className="flex gap-3 justify-center">
-                {!showResult ? (
-                  <Button 
-                    onClick={checkAnswer} 
-                    disabled={!userAnswer}
-                    size="lg"
-                  >
-                    Check Answer
-                  </Button>
-                ) : (
-                  <Button onClick={nextProblem} size="lg">
-                    Next Problem
-                  </Button>
-                )}
+                <div className="flex justify-between">
+                  <span>Problems Attempted:</span>
+                  <span className="font-bold">{problemsAttempted}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Accuracy:</span>
+                  <span className="font-bold text-blue-600">
+                    {problemsAttempted > 0 ? Math.round((score / problemsAttempted) * 100) : 0}%
+                  </span>
+                </div>
               </div>
             </CardContent>
           </Card>
-        )}
+
+          {/* Problem Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Current Problem</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {currentProblem && (
+                <div className="text-center space-y-6">
+                  <div className="text-6xl font-mono bg-gray-50 p-6 rounded-lg">
+                    <div className="text-right">
+                      {currentProblem.num1.toLocaleString()}
+                    </div>
+                    <div className="text-right">
+                      {currentProblem.operation === 'addition' ? '+' : '-'} {currentProblem.num2.toLocaleString()}
+                    </div>
+                    <div className="border-t-4 border-gray-800 my-2"></div>
+                    <div className="text-right">
+                      <input
+                        type="number"
+                        value={userAnswer}
+                        onChange={(e) => setUserAnswer(e.target.value)}
+                        onKeyPress={handleKeyPress}
+                        disabled={showResult}
+                        className="bg-transparent border-none outline-none text-right w-full"
+                        placeholder="Your answer"
+                        autoFocus
+                      />
+                    </div>
+                  </div>
+
+                  {showResult && (
+                    <div className={`flex items-center justify-center gap-2 text-lg font-semibold ${
+                      isCorrect ? 'text-green-600' : 'text-red-600'
+                    }`}>
+                      {isCorrect ? (
+                        <>
+                          <CheckCircle className="w-6 h-6" />
+                          Correct! Well done!
+                        </>
+                      ) : (
+                        <>
+                          <XCircle className="w-6 h-6" />
+                          Incorrect. The answer is {currentProblem.answer.toLocaleString()}
+                        </>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="space-x-4">
+                    {!showResult ? (
+                      <Button onClick={handleSubmit} disabled={userAnswer === ''}>
+                        Submit Answer
+                      </Button>
+                    ) : (
+                      <Button onClick={nextProblem} className="gap-2">
+                        <RefreshCw className="w-4 h-4" />
+                        Next Problem
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default MathPractice
+export default MathPractice;

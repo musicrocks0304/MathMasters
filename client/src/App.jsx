@@ -1,23 +1,22 @@
 
-import React, { useState } from 'react'
-import { Router, Route, Switch } from 'wouter'
-import MathPractice from './pages/math-practice.jsx'
-import NotFound from './pages/not-found.jsx'
-import { Toaster } from '@/components/ui/toaster'
+import { Router, Route, Switch } from "wouter";
+import { Toaster } from "@/components/ui/toaster";
+import MathPractice from "@/pages/math-practice";
+import NotFound from "@/pages/not-found";
 
 function App() {
   return (
-    <div className="min-h-screen bg-background">
-      <Router>
+    <Router>
+      <div className="min-h-screen bg-background">
         <Switch>
           <Route path="/" component={MathPractice} />
           <Route path="/practice" component={MathPractice} />
           <Route component={NotFound} />
         </Switch>
-      </Router>
-      <Toaster />
-    </div>
-  )
+        <Toaster />
+      </div>
+    </Router>
+  );
 }
 
-export default App
+export default App;
