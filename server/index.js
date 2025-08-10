@@ -10,7 +10,7 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { promises as fs } from "fs";
 import { createUserStorage } from "./storage.js";
-import { createViteProxy } from "./vite.js";
+// Vite proxy will be handled differently in JS
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -92,8 +92,25 @@ app.get("/api/user", (req, res) => {
 });
 
 if (isDev) {
-  // Development mode with Vite
-  await createViteProxy(app);
+  // Development mode with Vite proxy
+  const { createProxyMiddleware } = await import("http-proxy-middleware");
+  
+  app.use("/", createProxyMiddleware({
+    target: "http://localhost:24678",
+    changeOrigin: true,
+    ws: true,
+    pathRewrite: {
+      "^/api": "/api", // Keep API routes
+    },
+    router: (req) => {
+      if (req.path.startsWith("/api")) {
+        return false; // Don't proxy API routes
+      }
+      return "http://localhost:24678";
+    },
+  }));
+
+  console.log("[vite] proxy configured successfully");
 } else {
   // Production mode
   const staticPath = join(__dirname, "../dist/public");
