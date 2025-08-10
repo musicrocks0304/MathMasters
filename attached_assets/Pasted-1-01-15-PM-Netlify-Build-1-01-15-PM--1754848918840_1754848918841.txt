@@ -1,0 +1,67 @@
+1:01:15 PM: Netlify Build                                                 
+1:01:15 PM: ────────────────────────────────────────────────────────────────
+1:01:15 PM: ​
+1:01:15 PM: ❯ Version
+1:01:15 PM:   @netlify/build 35.0.5
+1:01:15 PM: ​
+1:01:15 PM: ❯ Flags
+1:01:15 PM:   accountId: 687e900776a884ac202742fb
+1:01:15 PM:   baseRelDir: true
+1:01:15 PM:   buildId: 6898de5da9eb6f00087010ed
+1:01:15 PM:   deployId: 6898de5da9eb6f00087010ef
+1:01:15 PM: ​
+1:01:15 PM: ❯ Current directory
+1:01:15 PM:   /opt/build/repo
+1:01:15 PM: ​
+1:01:15 PM: ❯ Config file
+1:01:15 PM:   No config file was defined: using default values.
+1:01:15 PM: ​
+1:01:15 PM: ❯ Context
+1:01:15 PM:   production
+1:01:15 PM: ​
+1:01:15 PM: Build command from Netlify app                                
+1:01:15 PM: ────────────────────────────────────────────────────────────────
+1:01:15 PM: ​
+1:01:15 PM: $ npm run build
+1:01:15 PM: > rest-express@1.0.0 build
+1:01:31 PM: > cd client && npm install && npm run build && cd .. && cp -r client/dist/* ./dist/
+1:01:31 PM: added 331 packages, and audited 332 packages in 16s
+1:01:31 PM: 48 packages are looking for funding
+1:01:31 PM:   run `npm fund` for details
+1:01:31 PM: 2 moderate severity vulnerabilities
+1:01:31 PM: To address all issues (including breaking changes), run:
+1:01:31 PM:   npm audit fix --force
+1:01:31 PM: Run `npm audit` for details.
+1:01:31 PM: > math-practice-client@1.0.0 build
+1:01:31 PM: > vite build
+1:01:31 PM: vite v5.4.19 building for production...
+1:01:31 PM: transforming...
+1:01:34 PM: Failed during stage 'building site': Build script returned non-zero exit code: 2 (https://ntl.fyi/exit-code-2)
+1:01:33 PM: ✓ 1652 modules transformed.
+1:01:33 PM: rendering chunks...
+1:01:33 PM: computing gzip size...
+1:01:33 PM: dist/index.html                   1.17 kB │ gzip:  0.61 kB
+1:01:33 PM: dist/assets/index-VucaDaaP.css   24.82 kB │ gzip:  5.44 kB
+1:01:33 PM: dist/assets/index-Cve-nd-8.js   232.58 kB │ gzip: 74.30 kB
+1:01:33 PM: ✓ built in 2.19s
+1:01:33 PM: cp: target './dist/': No such file or directory
+1:01:33 PM: ​
+1:01:33 PM: "build.command" failed                                        
+1:01:33 PM: ────────────────────────────────────────────────────────────────
+1:01:33 PM: ​
+1:01:33 PM:   Error message
+1:01:33 PM:   Command failed with exit code 1: npm run build (https://ntl.fyi/exit-code-1)
+1:01:33 PM: ​
+1:01:33 PM:   Error location
+1:01:33 PM:   In Build command from Netlify app:
+1:01:33 PM:   npm run build
+1:01:33 PM: ​
+1:01:33 PM:   Resolved config
+1:01:33 PM:   build:
+1:01:33 PM:     command: npm run build
+1:01:33 PM:     commandOrigin: ui
+1:01:33 PM:     publish: /opt/build/repo/dist
+1:01:33 PM:     publishOrigin: ui
+1:01:34 PM: Build failed due to a user error: Build script returned non-zero exit code: 2
+1:01:34 PM: Failing build: Failed to build site
+1:01:34 PM: Finished processing build request in 32.324s
