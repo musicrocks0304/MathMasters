@@ -11,6 +11,7 @@ The system is built as a full-stack application with a React frontend and Expres
 - **Fixed Column Alignment**: Corrected the math problem display so digits properly align in columns (first number now correctly shifts right to align with the operation sign position)
 - **Added Hint System**: Implemented a "Need a hint?" mechanism that activates when users get problems incorrect, providing contextual guidance and allowing retry attempts without counting against their score
 - **Enhanced Scoring**: Modified scoring system to not penalize retries after hints, encouraging learning through practice
+- **Dynamic Alignment Fix**: Updated column alignment to work dynamically across all digit options (2-digit, 3-digit, 4-digit) and both operations (addition/subtraction), using CSS grid with dynamic column counts
 
 ## User Preferences
 

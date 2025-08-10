@@ -317,82 +317,113 @@ export default function MathPractice() {
 
             {/* Problem Container with Proper Alignment */}
             <div className="bg-gray-50 rounded-xl p-6 font-mono">
-              {/* Helpers Row (conditional) */}
-              {showHelpers && (
-                <div className="flex justify-end mb-2 h-6">
-                  <div className={maxAnswerDigits === 5 ? 'math-grid-5' : 'math-grid'}>
-                    <div className="carry-indicator"></div>
-                    {carries.map((carry, index) => (
-                      <div key={index} className="carry-indicator">
-                        {operation === 'addition' 
-                          ? (carry > 0 ? carry : '')
-                          : (borrows[index] > 0 ? borrows[index] : '')
-                        }
+              {(() => {
+                const gridColumns = maxAnswerDigits + 1; // +1 for operation sign
+                
+                return (
+                  <>
+                    {/* Helpers Row (conditional) */}
+                    {showHelpers && (
+                      <div className="flex justify-end mb-2 h-6">
+                        <div className={`grid gap-4`} style={{
+                          gridTemplateColumns: `repeat(${gridColumns}, 3rem)`,
+                          justifyContent: 'end'
+                        }}>
+                          <div className="carry-indicator"></div>
+                          {Array.from({ length: digitCount }).map((_, index) => (
+                            <div key={index} className="carry-indicator">
+                              {operation === 'addition' 
+                                ? (carries[index] > 0 ? carries[index] : '')
+                                : (borrows[index] > 0 ? borrows[index] : '')
+                              }
+                            </div>
+                          ))}
+                          {/* Extra spaces for alignment if needed */}
+                          {Array.from({ length: maxAnswerDigits - digitCount }).map((_, index) => (
+                            <div key={`extra-${index}`} className="carry-indicator"></div>
+                          ))}
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+                    )}
 
-              {/* First Number - Properly aligned with extra space for operation sign */}
-              <div className="flex justify-end mb-2">
-                <div className={maxAnswerDigits === 5 ? 'math-grid-5' : 'math-grid'}>
-                  <div className="math-cell text-gray-800"></div>
-                  {maxAnswerDigits === 5 && digitCount < 4 && <div className="math-cell text-gray-800"></div>}
-                  {num1Digits.map((digit, index) => (
-                    <div key={index} className="math-cell text-gray-800">{digit}</div>
-                  ))}
-                </div>
-              </div>
+                    {/* First Number - Properly aligned with extra space for operation sign */}
+                    <div className="flex justify-end mb-2">
+                      <div className={`grid gap-4`} style={{
+                        gridTemplateColumns: `repeat(${gridColumns}, 3rem)`,
+                        justifyContent: 'end'
+                      }}>
+                        <div className="math-cell text-gray-800"></div>
+                        {/* Add empty cells for alignment if answer has more digits than operands */}
+                        {Array.from({ length: maxAnswerDigits - digitCount }).map((_, index) => (
+                          <div key={`empty-${index}`} className="math-cell text-gray-800"></div>
+                        ))}
+                        {num1Digits.map((digit, index) => (
+                          <div key={index} className="math-cell text-gray-800">{digit}</div>
+                        ))}
+                      </div>
+                    </div>
 
-              {/* Operation Sign + Second Number */}
-              <div className="flex justify-end mb-2">
-                <div className={maxAnswerDigits === 5 ? 'math-grid-5' : 'math-grid'}>
-                  <div className="math-cell text-purple-600">
-                    {operation === 'addition' ? '+' : '−'}
-                  </div>
-                  {maxAnswerDigits === 5 && digitCount < 4 && <div className="math-cell text-gray-800"></div>}
-                  {num2Digits.map((digit, index) => (
-                    <div key={index} className="math-cell text-gray-800">{digit}</div>
-                  ))}
-                </div>
-              </div>
+                    {/* Operation Sign + Second Number */}
+                    <div className="flex justify-end mb-2">
+                      <div className={`grid gap-4`} style={{
+                        gridTemplateColumns: `repeat(${gridColumns}, 3rem)`,
+                        justifyContent: 'end'
+                      }}>
+                        <div className="math-cell text-purple-600">
+                          {operation === 'addition' ? '+' : '−'}
+                        </div>
+                        {/* Add empty cells for alignment if answer has more digits than operands */}
+                        {Array.from({ length: maxAnswerDigits - digitCount }).map((_, index) => (
+                          <div key={`empty-${index}`} className="math-cell text-gray-800"></div>
+                        ))}
+                        {num2Digits.map((digit, index) => (
+                          <div key={index} className="math-cell text-gray-800">{digit}</div>
+                        ))}
+                      </div>
+                    </div>
 
-              {/* Horizontal Line */}
-              <div className="flex justify-end mb-4">
-                <div className={maxAnswerDigits === 5 ? 'w-80' : 'w-64'}>
-                  <div className="border-t-3 border-gray-800"></div>
-                </div>
-              </div>
+                    {/* Horizontal Line */}
+                    <div className="flex justify-end mb-4">
+                      <div style={{ width: `${gridColumns * 3 + (gridColumns - 1)}rem` }}>
+                        <div className="border-t-3 border-gray-800"></div>
+                      </div>
+                    </div>
 
-              {/* Answer Input Row */}
-              <div className="flex justify-end">
-                <div className={maxAnswerDigits === 5 ? 'math-grid-5' : 'math-grid'}>
-                  {userAnswer.map((digit, index) => {
-                    const isFirstDigit = index === 0;
-                    const shouldDisable = isFirstDigit && correctAnswer < Math.pow(10, maxAnswerDigits - 1);
-                    
-                    return (
-                      <input
-                        key={index}
-                        id={`digit-${index}`}
-                        type="text"
-                        maxLength={1}
-                        value={digit}
-                        onChange={(e) => handleInputChange(index, e.target.value)}
-                        className={`math-input ${
-                          showResult
-                            ? digit === correctDigits[index].toString()
-                              ? 'correct'
-                              : 'incorrect'
-                            : ''
-                        } ${shouldDisable ? 'opacity-30' : ''}`}
-                        disabled={showResult || shouldDisable}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
+                    {/* Answer Input Row */}
+                    <div className="flex justify-end">
+                      <div className={`grid gap-4`} style={{
+                        gridTemplateColumns: `repeat(${gridColumns}, 3rem)`,
+                        justifyContent: 'end'
+                      }}>
+                        <div className="w-12"></div> {/* Empty space for operation sign column */}
+                        {userAnswer.map((digit, index) => {
+                          const isFirstDigit = index === 0;
+                          const shouldDisable = isFirstDigit && correctAnswer < Math.pow(10, maxAnswerDigits - 1);
+                          
+                          return (
+                            <input
+                              key={index}
+                              id={`digit-${index}`}
+                              type="text"
+                              maxLength={1}
+                              value={digit}
+                              onChange={(e) => handleInputChange(index, e.target.value)}
+                              className={`math-input ${
+                                showResult
+                                  ? digit === correctDigits[index].toString()
+                                    ? 'correct'
+                                    : 'incorrect'
+                                  : ''
+                              } ${shouldDisable ? 'opacity-30' : ''}`}
+                              disabled={showResult || shouldDisable}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
             </div>
           </div>
 
