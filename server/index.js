@@ -1,4 +1,3 @@
-
 import express from "express";
 import session from "express-session";
 import passport from "passport";
@@ -11,6 +10,7 @@ import { dirname, join } from "path";
 import { promises as fs } from "fs";
 import { createUserStorage } from "./storage.js";
 // Vite proxy will be handled differently in JS
+import path from "path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -94,7 +94,7 @@ app.get("/api/user", (req, res) => {
 if (isDev) {
   // Development mode with Vite proxy
   const { createProxyMiddleware } = await import("http-proxy-middleware");
-  
+
   app.use("/", createProxyMiddleware({
     target: "http://localhost:24678",
     changeOrigin: true,
@@ -114,11 +114,11 @@ if (isDev) {
 } else {
   // Production mode
   const staticPath = join(__dirname, "../dist/public");
-  
+
   try {
     await fs.access(staticPath);
     app.use(express.static(staticPath));
-    
+
     app.get("*", (req, res) => {
       res.sendFile(join(staticPath, "index.html"));
     });
@@ -141,13 +141,13 @@ const wss = new WebSocketServer({ server: httpServer });
 
 wss.on("connection", (ws) => {
   console.log("New WebSocket connection");
-  
+
   ws.on("message", (message) => {
     console.log("Received:", message.toString());
     // Echo back for now
     ws.send(`Echo: ${message}`);
   });
-  
+
   ws.on("close", () => {
     console.log("WebSocket connection closed");
   });
