@@ -1,0 +1,73 @@
+12:53:23 PM: Failed during stage 'building site': Build script returned non-zero exit code: 2 (https://ntl.fyi/exit-code-2)
+12:53:21 PM: Netlify Build                                                 
+12:53:21 PM: ────────────────────────────────────────────────────────────────
+12:53:21 PM: ​
+12:53:21 PM: ❯ Version
+12:53:21 PM:   @netlify/build 35.0.5
+12:53:21 PM: ​
+12:53:21 PM: ❯ Flags
+12:53:21 PM:   accountId: 687e900776a884ac202742fb
+12:53:21 PM:   baseRelDir: true
+12:53:21 PM:   buildId: 6898dc58cda9d500083408f9
+12:53:21 PM:   deployId: 6898dc58cda9d500083408fb
+12:53:21 PM: ​
+12:53:21 PM: ❯ Current directory
+12:53:21 PM:   /opt/build/repo
+12:53:21 PM: ​
+12:53:21 PM: ❯ Config file
+12:53:21 PM:   No config file was defined: using default values.
+12:53:21 PM: ​
+12:53:21 PM: ❯ Context
+12:53:21 PM:   production
+12:53:21 PM: ​
+12:53:21 PM: Build command from Netlify app                                
+12:53:21 PM: ────────────────────────────────────────────────────────────────
+12:53:21 PM: ​
+12:53:21 PM: $ npm run build
+12:53:21 PM: > rest-express@1.0.0 build
+12:53:21 PM: > cd client && npm install && vite build
+12:53:23 PM: up to date, audited 488 packages in 1s
+12:53:23 PM: 65 packages are looking for funding
+12:53:23 PM:   run `npm fund` for details
+12:53:23 PM: 11 vulnerabilities (3 low, 8 moderate)
+12:53:23 PM: To address issues that do not require attention, run:
+12:53:23 PM:   npm audit fix
+12:53:23 PM: To address all issues (including breaking changes), run:
+12:53:23 PM:   npm audit fix --force
+12:53:23 PM: Run `npm audit` for details.
+12:53:23 PM: vite v5.4.19 building for production...
+12:53:23 PM: transforming...
+12:53:23 PM: ✓ 5 modules transformed.
+12:53:23 PM: x Build failed in 63ms
+12:53:23 PM: error during build:
+12:53:23 PM: [vite]: Rollup failed to resolve import "@/components/ui/toaster" from "/opt/build/repo/client/src/App.jsx".
+12:53:23 PM: This is most likely unintended because it can break your application at runtime.
+12:53:23 PM: If you do want to externalize this module explicitly add it to
+12:53:23 PM: `build.rollupOptions.external`
+12:53:23 PM:     at viteWarn (file:///opt/build/repo/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:65839:17)
+12:53:23 PM:     at onRollupWarning (file:///opt/build/repo/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:65871:5)
+12:53:23 PM:     at onwarn (file:///opt/build/repo/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:65534:7)
+12:53:23 PM:     at file:///opt/build/repo/node_modules/rollup/dist/es/shared/node-entry.js:19452:13
+12:53:23 PM:     at Object.logger [as onLog] (file:///opt/build/repo/node_modules/rollup/dist/es/shared/node-entry.js:21178:9)
+12:53:23 PM:     at ModuleLoader.handleInvalidResolvedId (file:///opt/build/repo/node_modules/rollup/dist/es/shared/node-entry.js:20067:26)
+12:53:23 PM:     at file:///opt/build/repo/node_modules/rollup/dist/es/shared/node-entry.js:20025:26
+12:53:23 PM: ​
+12:53:23 PM: "build.command" failed                                        
+12:53:23 PM: ────────────────────────────────────────────────────────────────
+12:53:23 PM: ​
+12:53:23 PM:   Error message
+12:53:23 PM:   Command failed with exit code 1: npm run build (https://ntl.fyi/exit-code-1)
+12:53:23 PM: ​
+12:53:23 PM:   Error location
+12:53:23 PM:   In Build command from Netlify app:
+12:53:23 PM:   npm run build
+12:53:23 PM: ​
+12:53:23 PM:   Resolved config
+12:53:23 PM:   build:
+12:53:23 PM:     command: npm run build
+12:53:23 PM:     commandOrigin: ui
+12:53:23 PM:     publish: /opt/build/repo/dist
+12:53:23 PM:     publishOrigin: ui
+12:53:23 PM: Build failed due to a user error: Build script returned non-zero exit code: 2
+12:53:23 PM: Failing build: Failed to build site
+12:53:24 PM: Finished processing build request in 12.782s
