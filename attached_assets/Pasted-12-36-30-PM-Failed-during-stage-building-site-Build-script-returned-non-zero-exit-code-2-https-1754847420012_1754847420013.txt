@@ -1,0 +1,125 @@
+12:36:30 PM: Failed during stage 'building site': Build script returned non-zero exit code: 2 (https://ntl.fyi/exit-code-2)
+12:36:28 PM: Netlify Build                                                 
+12:36:28 PM: ────────────────────────────────────────────────────────────────
+12:36:28 PM: ​
+12:36:28 PM: ❯ Version
+12:36:28 PM:   @netlify/build 35.0.5
+12:36:28 PM: ​
+12:36:28 PM: ❯ Flags
+12:36:28 PM:   accountId: 687e900776a884ac202742fb
+12:36:28 PM:   baseRelDir: true
+12:36:28 PM:   buildId: 6898d890c4e4d0000870746d
+12:36:28 PM:   deployId: 6898d890c4e4d0000870746f
+12:36:28 PM: ​
+12:36:28 PM: ❯ Current directory
+12:36:28 PM:   /opt/build/repo
+12:36:28 PM: ​
+12:36:28 PM: ❯ Config file
+12:36:28 PM:   No config file was defined: using default values.
+12:36:28 PM: ​
+12:36:28 PM: ❯ Context
+12:36:28 PM:   production
+12:36:28 PM: ​
+12:36:28 PM: Build command from Netlify app                                
+12:36:28 PM: ────────────────────────────────────────────────────────────────
+12:36:28 PM: ​
+12:36:28 PM: $ npm run build
+12:36:29 PM: > rest-express@1.0.0 build
+12:36:29 PM: > vite build && esbuild server/index.js --platform=node --packages=external --bundle --format=esm --outdir=dist
+12:36:29 PM: vite v5.4.19 building for production...
+12:36:29 PM: transforming...
+12:36:29 PM: Browserslist: browsers data (caniuse-lite) is 10 months old. Please run:
+12:36:29 PM:   npx update-browserslist-db@latest
+12:36:29 PM:   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+12:36:29 PM: ✓ 38 modules transformed.
+12:36:29 PM: x Build failed in 488ms
+12:36:29 PM: error during build:
+12:36:29 PM: [vite:esbuild] Transform failed with 7 errors:
+12:36:29 PM: /opt/build/repo/client/src/pages/not-found.jsx:27:9: ERROR: The symbol "Button" has already been declared
+12:36:29 PM: /opt/build/repo/client/src/pages/not-found.jsx:28:9: ERROR: The symbol "Card" has already been declared
+12:36:29 PM: /opt/build/repo/client/src/pages/not-found.jsx:28:15: ERROR: The symbol "CardContent" has already been declared
+12:36:29 PM: /opt/build/repo/client/src/pages/not-found.jsx:28:28: ERROR: The symbol "CardHeader" has already been declared
+12:36:29 PM: /opt/build/repo/client/src/pages/not-found.jsx:28:40: ERROR: The symbol "CardTitle" has already been declared
+12:36:29 PM: ...
+12:36:29 PM: file: /opt/build/repo/client/src/pages/not-found.jsx:27:9
+12:36:29 PM: 
+12:36:29 PM: The symbol "Button" has already been declared
+12:36:29 PM: 25 |
+12:36:29 PM: 26 |  export default NotFound;
+12:36:29 PM: 27 |  import { Button } from "@/components/ui/button";
+12:36:29 PM:    |           ^
+12:36:29 PM: 28 |  import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+12:36:29 PM: 29 |
+12:36:29 PM: The symbol "Card" has already been declared
+12:36:29 PM: 26 |  export default NotFound;
+12:36:29 PM: 27 |  import { Button } from "@/components/ui/button";
+12:36:29 PM: 28 |  import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+12:36:29 PM:    |           ^
+12:36:29 PM: 29 |
+12:36:29 PM: 30 |  export default function NotFound() {
+12:36:29 PM: The symbol "CardContent" has already been declared
+12:36:29 PM: 26 |  export default NotFound;
+12:36:29 PM: 27 |  import { Button } from "@/components/ui/button";
+12:36:29 PM: 28 |  import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+12:36:29 PM:    |                 ^
+12:36:29 PM: 29 |
+12:36:29 PM: 30 |  export default function NotFound() {
+12:36:29 PM: The symbol "CardHeader" has already been declared
+12:36:29 PM: 26 |  export default NotFound;
+12:36:29 PM: 27 |  import { Button } from "@/components/ui/button";
+12:36:29 PM: 28 |  import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+12:36:29 PM:    |                              ^
+12:36:29 PM: 29 |
+12:36:29 PM: 30 |  export default function NotFound() {
+12:36:29 PM: The symbol "CardTitle" has already been declared
+12:36:29 PM: 26 |  export default NotFound;
+12:36:29 PM: 27 |  import { Button } from "@/components/ui/button";
+12:36:29 PM: 28 |  import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+12:36:29 PM:    |                                          ^
+12:36:29 PM: 29 |
+12:36:29 PM: 30 |  export default function NotFound() {
+12:36:29 PM: Multiple exports with the same name "default"
+12:36:29 PM: 28 |  import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+12:36:29 PM: 29 |
+12:36:29 PM: 30 |  export default function NotFound() {
+12:36:29 PM:    |         ^
+12:36:29 PM: 31 |    return (
+12:36:29 PM: 32 |      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center p-4">
+12:36:29 PM: The symbol "NotFound" has already been declared
+12:36:29 PM: 28 |  import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+12:36:29 PM: 29 |
+12:36:29 PM: 30 |  export default function NotFound() {
+12:36:29 PM:    |                          ^
+12:36:29 PM: 31 |    return (
+12:36:29 PM: 32 |      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center p-4">
+12:36:29 PM: 
+12:36:29 PM:     at failureErrorWithLog (/opt/build/repo/node_modules/vite/node_modules/esbuild/lib/main.js:1472:15)
+12:36:29 PM:     at /opt/build/repo/node_modules/vite/node_modules/esbuild/lib/main.js:755:50
+12:36:29 PM:     at responseCallbacks.<computed> (/opt/build/repo/node_modules/vite/node_modules/esbuild/lib/main.js:622:9)
+12:36:29 PM:     at handleIncomingPacket (/opt/build/repo/node_modules/vite/node_modules/esbuild/lib/main.js:677:12)
+12:36:29 PM:     at Socket.readFromStdout (/opt/build/repo/node_modules/vite/node_modules/esbuild/lib/main.js:600:7)
+12:36:29 PM:     at Socket.emit (node:events:518:28)
+12:36:29 PM:     at addChunk (node:internal/streams/readable:561:12)
+12:36:29 PM:     at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+12:36:29 PM:     at Readable.push (node:internal/streams/readable:392:5)
+12:36:29 PM:     at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+12:36:29 PM: ​
+12:36:29 PM: "build.command" failed                                        
+12:36:29 PM: ────────────────────────────────────────────────────────────────
+12:36:29 PM: ​
+12:36:29 PM:   Error message
+12:36:29 PM:   Command failed with exit code 1: npm run build (https://ntl.fyi/exit-code-1)
+12:36:29 PM: ​
+12:36:29 PM:   Error location
+12:36:29 PM:   In Build command from Netlify app:
+12:36:29 PM:   npm run build
+12:36:29 PM: ​
+12:36:29 PM:   Resolved config
+12:36:29 PM:   build:
+12:36:29 PM:     command: npm run build
+12:36:29 PM:     commandOrigin: ui
+12:36:29 PM:     publish: /opt/build/repo/dist
+12:36:29 PM:     publishOrigin: ui
+12:36:30 PM: Build failed due to a user error: Build script returned non-zero exit code: 2
+12:36:30 PM: Failing build: Failed to build site
+12:36:30 PM: Finished processing build request in 12.975s
