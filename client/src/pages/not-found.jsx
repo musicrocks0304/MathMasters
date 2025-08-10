@@ -24,30 +24,3 @@ function NotFound() {
 }
 
 export default NotFound;
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-export default function NotFound() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center p-4">
-      <Card className="max-w-md">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl font-bold text-purple-700">
-            Page Not Found
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="text-center">
-          <p className="text-gray-600 mb-4">
-            The page you're looking for doesn't exist.
-          </p>
-          <Button 
-            onClick={() => window.location.href = '/'}
-            className="bg-purple-600 hover:bg-purple-700"
-          >
-            Go Home
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
