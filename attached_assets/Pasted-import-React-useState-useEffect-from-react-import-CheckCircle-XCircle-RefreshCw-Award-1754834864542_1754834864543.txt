@@ -1,0 +1,225 @@
+import React, { useState, useEffect } from 'react';
+import { CheckCircle, XCircle, RefreshCw, Award } from 'lucide-react';
+
+export default function TripleDigitAddition() {
+  const [num1, setNum1] = useState(0);
+  const [num2, setNum2] = useState(0);
+  const [userAnswer, setUserAnswer] = useState(['', '', '', '']);
+  const [carries, setCarries] = useState([0, 0, 0]);
+  const [showResult, setShowResult] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(false);
+  const [score, setScore] = useState(0);
+  const [attempts, setAttempts] = useState(0);
+  const [showCarries, setShowCarries] = useState(false);
+
+  // Generate new problem
+  const generateProblem = () => {
+    // Generate numbers that will likely require regrouping
+    const n1 = Math.floor(Math.random() * 500) + 300; // 300-799
+    const n2 = Math.floor(Math.random() * 500) + 200; // 200-699
+    setNum1(n1);
+    setNum2(n2);
+    setUserAnswer(['', '', '', '']);
+    setShowResult(false);
+    setShowCarries(false);
+    calculateCarries(n1, n2);
+  };
+
+  // Calculate carries for visual hint
+  const calculateCarries = (n1, n2) => {
+    const d1 = [Math.floor(n1 / 100), Math.floor((n1 % 100) / 10), n1 % 10];
+    const d2 = [Math.floor(n2 / 100), Math.floor((n2 % 100) / 10), n2 % 10];
+    const newCarries = [0, 0, 0];
+    
+    // Calculate from right to left
+    if (d1[2] + d2[2] >= 10) newCarries[1] = 1;
+    if (d1[1] + d2[1] + newCarries[1] >= 10) newCarries[0] = 1;
+    
+    setCarries(newCarries);
+  };
+
+  useEffect(() => {
+    generateProblem();
+  }, []);
+
+  const handleInputChange = (index, value) => {
+    if (value === '' || /^\d$/.test(value)) {
+      const newAnswer = [...userAnswer];
+      newAnswer[index] = value;
+      setUserAnswer(newAnswer);
+      
+      // Auto-focus next input
+      if (value && index < 3) {
+        const nextInput = document.getElementById(`digit-${index + 1}`);
+        if (nextInput) nextInput.focus();
+      }
+    }
+  };
+
+  const checkAnswer = () => {
+    const answer = parseInt(userAnswer.join(''));
+    const correctAnswer = num1 + num2;
+    const correct = answer === correctAnswer;
+    
+    setIsCorrect(correct);
+    setShowResult(true);
+    setAttempts(attempts + 1);
+    
+    if (correct) {
+      setScore(score + 1);
+    }
+  };
+
+  const getDigits = (num) => {
+    const hundreds = Math.floor(num / 100);
+    const tens = Math.floor((num % 100) / 10);
+    const ones = num % 10;
+    return [hundreds, tens, ones];
+  };
+
+  const num1Digits = getDigits(num1);
+  const num2Digits = getDigits(num2);
+  const correctAnswer = num1 + num2;
+  const correctDigits = correctAnswer >= 1000 
+    ? [Math.floor(correctAnswer / 1000), Math.floor((correctAnswer % 1000) / 100), Math.floor((correctAnswer % 100) / 10), correctAnswer % 10]
+    : [0, ...getDigits(correctAnswer)];
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
+      <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
+        <h1 className="text-3xl font-bold text-center mb-6 text-purple-800">
+          Triple-Digit Addition Practice! 🧮
+        </h1>
+        
+        {/* Score Display */}
+        <div className="flex justify-between mb-6 bg-purple-100 rounded-lg p-3">
+          <div className="flex items-center gap-2">
+            <Award className="w-5 h-5 text-yellow-500" />
+            <span className="font-semibold">Score: {score}/{attempts}</span>
+          </div>
+          {attempts > 0 && (
+            <span className="text-sm text-gray-600">
+              {Math.round((score / attempts) * 100)}% correct
+            </span>
+          )}
+        </div>
+
+        {/* Addition Problem Display */}
+        <div className="flex flex-col items-center mb-6">
+          <div className="relative">
+            {/* Carry row */}
+            <div className="flex justify-end mb-1">
+              <button
+                onClick={() => setShowCarries(!showCarries)}
+                className="text-xs text-blue-600 hover:text-blue-800 mb-2"
+              >
+                {showCarries ? 'Hide' : 'Show'} carries
+              </button>
+            </div>
+            {showCarries && (
+              <div className="flex gap-6 text-sm text-orange-500 font-bold mb-1">
+                <span className="w-8 text-center invisible">+</span>
+                <span className="w-8 text-center">{carries[0] > 0 ? carries[0] : ''}</span>
+                <span className="w-8 text-center">{carries[1] > 0 ? carries[1] : ''}</span>
+                <span className="w-8"></span>
+              </div>
+            )}
+            
+            {/* First number */}
+            <div className="flex gap-6 text-3xl font-mono mb-2">
+              <span className="w-8 text-center invisible">+</span>
+              <span className="w-8 text-center">{num1Digits[0]}</span>
+              <span className="w-8 text-center">{num1Digits[1]}</span>
+              <span className="w-8 text-center">{num1Digits[2]}</span>
+            </div>
+            
+            {/* Plus sign and second number */}
+            <div className="flex gap-6 text-3xl font-mono mb-2">
+              <span className="w-8 text-center">+</span>
+              <span className="w-8 text-center">{num2Digits[0]}</span>
+              <span className="w-8 text-center">{num2Digits[1]}</span>
+              <span className="w-8 text-center">{num2Digits[2]}</span>
+            </div>
+            
+            {/* Line */}
+            <div className="border-t-4 border-gray-800 mb-2"></div>
+            
+            {/* Answer inputs */}
+            <div className="flex gap-6">
+              <span className="w-8 text-center invisible">+</span>
+              {userAnswer.map((digit, index) => (
+                <input
+                  key={index}
+                  id={`digit-${index}`}
+                  type="text"
+                  value={digit}
+                  onChange={(e) => handleInputChange(index, e.target.value)}
+                  className={`w-8 h-12 text-2xl text-center font-mono border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 ${
+                    showResult
+                      ? digit === correctDigits[index].toString()
+                        ? 'border-green-500 bg-green-50'
+                        : 'border-red-500 bg-red-50'
+                      : 'border-gray-300'
+                  } ${index === 0 && correctAnswer < 1000 ? 'opacity-30' : ''}`}
+                  maxLength="1"
+                  disabled={showResult || (index === 0 && correctAnswer < 1000)}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Result message */}
+        {showResult && (
+          <div className={`flex items-center justify-center gap-2 mb-4 p-3 rounded-lg ${
+            isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+          }`}>
+            {isCorrect ? (
+              <>
+                <CheckCircle className="w-6 h-6" />
+                <span className="font-semibold">Great job! That's correct! 🎉</span>
+              </>
+            ) : (
+              <>
+                <XCircle className="w-6 h-6" />
+                <span className="font-semibold">
+                  Not quite. The answer is {correctAnswer}
+                </span>
+              </>
+            )}
+          </div>
+        )}
+
+        {/* Action buttons */}
+        <div className="flex gap-4">
+          {!showResult && userAnswer.some(d => d !== '') && (
+            <button
+              onClick={checkAnswer}
+              className="flex-1 bg-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+            >
+              Check Answer
+            </button>
+          )}
+          
+          {showResult && (
+            <button
+              onClick={generateProblem}
+              className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+            >
+              <RefreshCw className="w-5 h-5" />
+              New Problem
+            </button>
+          )}
+        </div>
+
+        {/* Tips */}
+        <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+          <p className="text-sm text-gray-700">
+            <span className="font-semibold">💡 Tip:</span> Start adding from the ones place (right side). 
+            If the sum is 10 or more, write the ones digit and carry the 1 to the next column!
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
