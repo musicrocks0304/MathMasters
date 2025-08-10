@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CheckCircle, XCircle, RefreshCw, Award, Eye, EyeOff, Check, Lightbulb, TrendingUp } from 'lucide-react';
+import { CheckCircle, XCircle, RefreshCw, Award, Eye, EyeOff, Check, Lightbulb, TrendingUp, HelpCircle } from 'lucide-react';
 
 type Operation = 'addition' | 'subtraction';
 type Difficulty = '2digit' | '3digit' | '4digit';
@@ -25,6 +25,8 @@ export default function MathPractice() {
   const [showHelpers, setShowHelpers] = useState(false);
   const [streak, setStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
+  const [showHint, setShowHint] = useState(false);
+  const [isRetrying, setIsRetrying] = useState(false);
 
   // Progress tracking
   const [progress, setProgress] = useState({
@@ -73,6 +75,8 @@ export default function MathPractice() {
     const maxAnswerDigits = getMaxAnswer();
     setUserAnswer(new Array(maxAnswerDigits).fill(''));
     setShowResult(false);
+    setShowHint(false);
+    setIsRetrying(false);
     
     calculateHelpers(num1, num2, operation);
   };
@@ -153,27 +157,43 @@ export default function MathPractice() {
     
     setIsCorrect(correct);
     setShowResult(true);
-    setAttempts(prev => prev + 1);
     
-    // Update progress
-    setProgress(prev => ({
-      ...prev,
-      [difficulty]: {
-        solved: correct ? prev[difficulty].solved + 1 : prev[difficulty].solved,
-        total: prev[difficulty].total + 1
-      }
-    }));
+    // Only count as attempt if not retrying after hint
+    if (!isRetrying) {
+      setAttempts(prev => prev + 1);
+      
+      // Update progress
+      setProgress(prev => ({
+        ...prev,
+        [difficulty]: {
+          solved: correct ? prev[difficulty].solved + 1 : prev[difficulty].solved,
+          total: prev[difficulty].total + 1
+        }
+      }));
+    }
     
     if (correct) {
-      setScore(prev => prev + 1);
+      // Only add to score if not retrying
+      if (!isRetrying) {
+        setScore(prev => prev + 1);
+      }
       setStreak(prev => {
         const newStreak = prev + 1;
         setBestStreak(current => Math.max(current, newStreak));
         return newStreak;
       });
+      setIsRetrying(false);
     } else {
       setStreak(0);
     }
+  };
+
+  const requestHint = () => {
+    setShowHint(true);
+    setShowResult(false);
+    setIsRetrying(true);
+    // Clear the answer for retry
+    setUserAnswer(new Array(getMaxAnswer()).fill(''));
   };
 
   const hasAnswer = userAnswer.some(digit => digit !== '');
@@ -301,10 +321,11 @@ export default function MathPractice() {
               {showHelpers && (
                 <div className="flex justify-end mb-2 h-6">
                   <div className={maxAnswerDigits === 5 ? 'math-grid-5' : 'math-grid'}>
-                    {(maxAnswerDigits === 5 ? new Array(5) : new Array(4)).fill(0).map((_, index) => (
+                    <div className="carry-indicator"></div>
+                    {carries.map((carry, index) => (
                       <div key={index} className="carry-indicator">
                         {operation === 'addition' 
-                          ? (carries[index] > 0 ? carries[index] : '')
+                          ? (carry > 0 ? carry : '')
                           : (borrows[index] > 0 ? borrows[index] : '')
                         }
                       </div>
@@ -313,10 +334,11 @@ export default function MathPractice() {
                 </div>
               )}
 
-              {/* First Number */}
+              {/* First Number - Properly aligned with extra space for operation sign */}
               <div className="flex justify-end mb-2">
                 <div className={maxAnswerDigits === 5 ? 'math-grid-5' : 'math-grid'}>
-                  {maxAnswerDigits === 5 && <div className="math-cell text-gray-800"></div>}
+                  <div className="math-cell text-gray-800"></div>
+                  {maxAnswerDigits === 5 && digitCount < 4 && <div className="math-cell text-gray-800"></div>}
                   {num1Digits.map((digit, index) => (
                     <div key={index} className="math-cell text-gray-800">{digit}</div>
                   ))}
@@ -329,6 +351,7 @@ export default function MathPractice() {
                   <div className="math-cell text-purple-600">
                     {operation === 'addition' ? '+' : '−'}
                   </div>
+                  {maxAnswerDigits === 5 && digitCount < 4 && <div className="math-cell text-gray-800"></div>}
                   {num2Digits.map((digit, index) => (
                     <div key={index} className="math-cell text-gray-800">{digit}</div>
                   ))}
@@ -373,6 +396,40 @@ export default function MathPractice() {
             </div>
           </div>
 
+          {/* Hint Display */}
+          {showHint && !showResult && (
+            <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <Lightbulb className="w-5 h-5 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold text-blue-800 mb-2">Helpful Hint</div>
+                  <div className="text-sm text-blue-700 space-y-2">
+                    {operation === 'addition' ? (
+                      <>
+                        <p>• Start adding from the ones place (rightmost column)</p>
+                        <p>• If the sum is 10 or more, write the ones digit and carry the 1</p>
+                        <p>• Don't forget to add any carried numbers to the next column</p>
+                        <p>• Try turning on "Show helps" to see where carrying happens</p>
+                      </>
+                    ) : (
+                      <>
+                        <p>• Start subtracting from the ones place (rightmost column)</p>
+                        <p>• If the top digit is smaller, borrow 10 from the next column</p>
+                        <p>• Remember to reduce the next column by 1 when you borrow</p>
+                        <p>• Try turning on "Show helps" to see where borrowing happens</p>
+                      </>
+                    )}
+                  </div>
+                  <div className="mt-3 text-sm text-blue-600 font-medium">
+                    Try again! You've got this! 💪
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Result Feedback */}
           {showResult && (
             <div className="mb-6">
@@ -400,12 +457,25 @@ export default function MathPractice() {
                     isCorrect ? 'text-green-600' : 'text-red-600'
                   }`}>
                     {isCorrect 
-                      ? 'You solved this problem correctly!'
+                      ? isRetrying 
+                        ? 'Great job! You got it after using the hint!'
+                        : 'You solved this problem correctly!'
                       : `The correct answer is ${correctAnswer}`
                     }
                   </div>
                 </div>
               </div>
+              
+              {/* Hint Button for Incorrect Answers */}
+              {!isCorrect && !isRetrying && (
+                <button
+                  onClick={requestHint}
+                  className="w-full bg-blue-100 hover:bg-blue-200 text-blue-700 py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                >
+                  <HelpCircle className="w-5 h-5" />
+                  Need a hint? Try again!
+                </button>
+              )}
             </div>
           )}
 

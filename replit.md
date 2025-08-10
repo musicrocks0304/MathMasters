@@ -6,6 +6,12 @@ Math Practice Pro is an interactive web application designed to help users maste
 
 The system is built as a full-stack application with a React frontend and Express.js backend, featuring a modern UI built with shadcn/ui components and Tailwind CSS for styling.
 
+## Recent Changes (January 10, 2025)
+
+- **Fixed Column Alignment**: Corrected the math problem display so digits properly align in columns (first number now correctly shifts right to align with the operation sign position)
+- **Added Hint System**: Implemented a "Need a hint?" mechanism that activates when users get problems incorrect, providing contextual guidance and allowing retry attempts without counting against their score
+- **Enhanced Scoring**: Modified scoring system to not penalize retries after hints, encouraging learning through practice
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
