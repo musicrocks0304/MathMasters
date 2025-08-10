@@ -1,16 +1,15 @@
-
 import express from "express";
 import session from "express-session";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { createServer } from "http";
 import { WebSocketServer } from "ws";
-import { createProxyMiddleware } from "http-proxy-middleware";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { promises as fs } from "fs";
-import { createUserStorage } from "./storage.js";
+import { createUserStorage } from "./storage.ts";
 import { createViteProxy } from "./vite.js";
+import routes from "./routes.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -43,7 +42,7 @@ const userStorage = createUserStorage();
 
 // Passport configuration
 passport.use(new LocalStrategy(
-  async (username, password, done) => {
+  async (username: string, password: string, done: any) => {
     try {
       const user = await userStorage.findByUsername(username);
       if (user && user.password === password) {
@@ -56,11 +55,11 @@ passport.use(new LocalStrategy(
   }
 ));
 
-passport.serializeUser((user, done) => {
+passport.serializeUser((user: any, done: any) => {
   done(null, user.id);
 });
 
-passport.deserializeUser(async (id, done) => {
+passport.deserializeUser(async (id: string, done: any) => {
   try {
     const user = await userStorage.findById(id);
     done(null, user);
@@ -75,7 +74,7 @@ app.post("/api/login", passport.authenticate("local"), (req, res) => {
 });
 
 app.post("/api/logout", (req, res) => {
-  req.logout((err) => {
+  req.logout((err: any) => {
     if (err) {
       return res.status(500).json({ error: "Logout failed" });
     }
@@ -91,9 +90,35 @@ app.get("/api/user", (req, res) => {
   }
 });
 
+// Use additional routes
+app.use("/api", routes);
+
 if (isDev) {
   // Development mode with Vite
-  await createViteProxy(app);
+  try {
+    await createViteProxy(app);
+    console.log("[vite] proxy configured successfully");
+  } catch (error) {
+    console.error("[vite] proxy setup failed:", error);
+    // Fallback to serving static files
+    app.get("*", (req, res) => {
+      res.send(`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Practice Pro</title>
+</head>
+<body>
+    <div id="root">
+        <h1>Math Practice Pro</h1>
+        <p>Vite development server error. Please check console logs.</p>
+        <p>Error: ${error.message}</p>
+    </div>
+</body>
+</html>`);
+    });
+  }
 } else {
   // Production mode
   const staticPath = join(__dirname, "../dist/public");
@@ -114,7 +139,7 @@ if (isDev) {
 }
 
 // Error handling middleware
-app.use((err, req, res, next) => {
+app.use((err: any, req: any, res: any, next: any) => {
   console.error(err.stack);
   res.status(500).json({ error: "Something went wrong!" });
 });

@@ -16,17 +16,17 @@ function MathPractice() {
     const operation = Math.random() > 0.5 ? 'addition' : 'subtraction';
     const max = Math.pow(10, difficulty) - 1;
     const min = Math.pow(10, difficulty - 1);
-
+    
     let num1 = Math.floor(Math.random() * (max - min + 1)) + min;
     let num2 = Math.floor(Math.random() * (max - min + 1)) + min;
-
+    
     // For subtraction, ensure num1 >= num2 to avoid negative results
     if (operation === 'subtraction' && num1 < num2) {
       [num1, num2] = [num2, num1];
     }
-
+    
     const answer = operation === 'addition' ? num1 + num2 : num1 - num2;
-
+    
     return {
       num1,
       num2,
@@ -37,11 +37,11 @@ function MathPractice() {
 
   const handleSubmit = () => {
     if (!currentProblem || userAnswer === '') return;
-
+    
     const correct = parseInt(userAnswer) === currentProblem.answer;
     setIsCorrect(correct);
     setShowResult(true);
-
+    
     if (correct) {
       setScore(score + 1);
     }
@@ -104,7 +104,7 @@ function MathPractice() {
                   <option value={4}>4 Digits</option>
                 </select>
               </div>
-
+              
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span>Score:</span>
